@@ -70,6 +70,12 @@ const upload = multer({
   },
 });
 
+app.get("/api/data", (req, res) => {
+  // Logika untuk mengambil data dari database
+  // Kemudian mengirimkannya sebagai respons JSON
+  res.json({ message: "Data dari backend" });
+});
+
 // Routing
 app.get("/", (req, res) => {
   res.redirect("/index");
