@@ -11,6 +11,7 @@ const appointmentRoutes = require("./routes/appointment");
 const profileRoutes = require("./routes/profile");
 const pembayaranRoutes = require("./routes/pembayaran");
 const editprofileRoutes = require("./routes/edit_profile");
+const cors = require("cors");
 const apiRoutes = require("./routes/api");
 const axios = require("axios");
 
@@ -28,6 +29,14 @@ sequelize
   .catch((err) => {
     console.error("Gagal menyeimbangkan tabel:", err);
   });
+
+app.use(
+  cors({
+    origin: "https://bintangrf.github.io/frontend/",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
