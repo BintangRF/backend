@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "axios": "^1.5.1",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "ejs": "^3.1.9",
@@ -14,7 +15,7 @@
   },
   "name": "backend-re-bios",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

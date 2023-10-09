@@ -11,30 +11,21 @@ router.post("/login", async (req, res) => {
     });
 
     if (user) {
-      const match = await bcrypt.compare(password, user.password); // Memeriksa kata sandi dengan bcrypt
+      const match = await bcrypt.compare(password, user.password);
 
       if (match) {
+        // Set status login di session
+        req.session.isLoggedIn = true;
         req.session.userId = user.id_pasien;
-
-        // Membuat nama_pendek dari 2 kata pertama nama_pasien
-        req.session.userId = user.id_pasien;
-        const nama_pasienWords = user.nama_pasien.split(" ");
-        const nama_pendek = `${nama_pasienWords[0]} ${nama_pasienWords[1]}`;
-        const foto_pasien = user.foto_pasien;
-        req.session.nama_pendek = nama_pendek;
         req.session.email_pasien = user.email_pasien;
-        req.session.foto_pasien = foto_pasien;
         res.redirect("/index2");
-        // Mengirim file HTML sebagai respons
       } else {
-        res.send(
-          "<script>alert('Password Anda salah'); window.location='/login';</script>"
-        );
+        const errorMessage = "Password Anda salah";
+        res.redirect(`/login?errorMessage=${encodeURIComponent(errorMessage)}`);
       }
     } else {
-      res.send(
-        "<script>alert('Email tidak ditemukan'); window.location='/login';</script>"
-      );
+      const errorMessage = "Email tidak ditemukan";
+      res.redirect(`/login?errorMessage=${encodeURIComponent(errorMessage)}`);
     }
   } catch (err) {
     console.error(err);

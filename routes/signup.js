@@ -1,20 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer"); // Untuk mengelola upload file
-const fs = require("fs").promises; // Untuk membaca berkas gambar
+const multer = require("multer");
+const fs = require("fs").promises;
 const Pasien = require("../models/pasien");
 const bcrypt = require("bcrypt");
 
-// Konfigurasi multer untuk mengelola upload file
-const storage = multer.memoryStorage(); // Simpan gambar dalam memori
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Handler untuk tampilan signup
-
-// Handler untuk menghandle form signup
 router.post("/signup", upload.single("foto_pasien"), async (req, res) => {
   try {
-    // Ambil data dari form
     const {
       nama_pasien,
       tanggal_lahir,
@@ -25,40 +20,31 @@ router.post("/signup", upload.single("foto_pasien"), async (req, res) => {
       password,
     } = req.body;
 
-    // Hash password sebelum menyimpannya
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Ambil file gambar yang diunggah, atau gunakan foto profil default jika tidak ada yang diunggah
     const foto_pasien = req.file
       ? req.file.buffer.toString("base64")
       : await getDefaultProfileImage();
 
-    // Simpan data ke database
-    const newPasien = await Pasien.create({
+    await Pasien.create({
       nama_pasien,
       tanggal_lahir,
       gender,
       nomor_ponsel,
       email_pasien,
       alamat,
-      password: hashedPassword, // Gunakan password yang telah di-hash
+      password: hashedPassword,
       foto_pasien,
     });
 
-    const successMessage = "Pendaftaran berhasil";
-    res.send(`
-      <script>
-        alert('${successMessage}');
-        window.location='/login'; // Ubah '/login' sesuai dengan URL login Anda
-      </script>
-    `);
+    // Redirect to login page after successful registration
+    res.redirect("/login");
   } catch (error) {
     console.error(error);
     return res.status(500).send("Pendaftaran gagal. Coba lagi nanti.");
   }
 });
 
-// Fungsi untuk mengambil foto profil default
 async function getDefaultProfileImage() {
   try {
     const defaultImageBuffer = await fs.readFile("public/img/poto-profil.png");
